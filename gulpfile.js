@@ -9,6 +9,7 @@ let paths = {
 	scripts: {
 		src: [
       'node_modules/jquery/dist/jquery.min.js',
+      'src/libs/Modernizr/Modernizr.js',
       'src/libs/lazysizes/lazysizes.js',
       //'node_modules/owl.carousel/dist/owl.carousel.min.js',
       //'src/libs/fancybox/jquery.fancybox.js',
