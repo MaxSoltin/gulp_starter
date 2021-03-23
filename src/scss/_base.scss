@@ -30,6 +30,12 @@
   outline: none;
 }
 
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
+  :focus {
+    box-shadow: none;
+  }
+}
+
 :active{
   -webkit-tap-highlight-color: transparent;
 }
