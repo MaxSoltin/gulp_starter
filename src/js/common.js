@@ -1,5 +1,5 @@
 $(function () {
 
-  $('img.lazyload').lazyload();
+  
 
 });
