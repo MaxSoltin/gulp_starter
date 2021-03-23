@@ -1,0 +1,29 @@
+@import 'media';
+  
+@mixin fz($val, $unit){
+  @if $unit == rem{
+    font-size: $val / 10 + rem;
+  }
+  @else if $unit == em{
+    font-size: $val / 16 + em;
+  }
+  @else{
+    font-size: $val + $unit;
+  }
+}
+
+@function u($val, $unit){
+  @if $unit == rem{
+    @return $val / 10 + rem;
+  }
+  @else if $unit == em{
+    @return $val / 16 + em;
+  }
+  @else{
+    @return $val + $unit;
+  }
+}
+
+@mixin ff($ffamily){
+  font-family: $mainFont+"-"+$ffamily, sans-serif;
+}

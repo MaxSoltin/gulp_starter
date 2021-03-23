@@ -1,0 +1,39 @@
+.ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  border-radius: inherit;
+  pointer-events: none;
+  animation: ripple-shadow 0.4s forwards;
+  -webkit-animation: ripple-shadow 0.4s forwards;
+}
+
+.rippleWave {
+  backface-visibility: hidden;
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0.7);
+  -webkit-transform: scale(0.7);
+  background: rgba(255, 255, 255, 1);
+  opacity: 0.45;
+  animation: ripple 2s forwards;
+  -webkit-animation: ripple 2s forwards;
+}
+
+@keyframes ripple {
+  to {
+    transform: scale(24);
+    opacity: 0;
+  }
+}
+@-webkit-keyframes ripple {
+  to {
+    -webkit-transform: scale(24);
+    opacity: 0;
+  }
+}
