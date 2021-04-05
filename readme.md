@@ -1,0 +1,1 @@
+<pre>git clone https://github.com/MaxSoltin/gulp_starter .; rm -rf trunk .gitignore readme.md .git</pre>
