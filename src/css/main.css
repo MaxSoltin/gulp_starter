@@ -5214,3 +5214,10 @@ fieldset {
         display: inline-flex!important
     }
 }
+
+@media screen and (-ms-high-contrast:active),(-ms-high-contrast:none) {
+    :focus {
+        -webkit-box-shadow: none;
+                box-shadow: none
+    }
+}

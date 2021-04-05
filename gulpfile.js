@@ -1,36 +1,14 @@
 let preprocessor = 'scss',
-    fileswatch   = 'html,htm,txt,json,md,woff2,js',
+    fileswatch   = 'html,htm,txt,json,md,woff2',
     baseDir      = 'src',
     online       = true,
     open         = true
 
-let paths = {
-
-	scripts: {
-		src: [
-      'node_modules/jquery/dist/jquery.min.js',
-      'src/libs/Modernizr/Modernizr.js',
-      'src/libs/lazysizes/lazysizes.js',
-      //'node_modules/owl.carousel/dist/owl.carousel.min.js',
-      //'src/libs/fancybox/jquery.fancybox.js',
-      //'node_modules/magnific-popup/dist/jquery.magnific-popup.js'
-      //'src/libs/maskedinput/jquery.maskedinput.min.js',
-
-			//baseDir + '/js/common.js'
-		],
-		dest: baseDir + '/js',
-	},
-
-	styles: {
-		src:  baseDir + '/scss/*.scss',
-		dest: baseDir + '/css',
-	},
-
-	jsOutputName:  'libs.min.js'
-
-}
 
 const { src, dest, parallel, series, watch } = require('gulp');
+
+const bssi         = require('browsersync-ssi')
+const ssi          = require('ssi')
 
 const scss          = require('gulp-sass');
 const gcmq          = require('gulp-group-css-media-queries');
@@ -40,12 +18,10 @@ const cssbeautify   = require('gulp-cssbeautify');
 
 const autoprefixer  = require('gulp-autoprefixer');
 const browserSync   = require('browser-sync').create();
+const webpack       = require('webpack-stream');
 
 const concat        = require('gulp-concat');
 const uglify        = require('gulp-uglify-es').default;
- 
-const imagemin      = require('gulp-imagemin');
-const newer         = require('gulp-newer');
 
 //const exec          = require('gulp-exec');
  
@@ -54,23 +30,50 @@ const del           = require('del');
 
 function browsersync() {
 	browserSync.init({
-		server: { baseDir: baseDir + '/' },
+		server: { 
+      baseDir: baseDir + '/',
+      middleware: bssi({ baseDir: 'src/', ext: '.html' })
+    },
 		notify: false,
     open: open,
 		online: online
 	})
 }
 
-function scripts() {
-	return src(paths.scripts.src)
-	.pipe(concat(paths.jsOutputName))
-	.pipe(uglify())
-	.pipe(dest(paths.scripts.dest))
-	.pipe(browserSync.stream())
+async function buildhtml() {
+	let includes = new ssi('app/', 'dist/', '/**/*.html')
+	includes.compile()
+	del('dist/parts', { force: true })
 }
 
+function scripts() {
+	return src(['src/js/*.js', '!src/js/*.min.js'])
+		.pipe(webpack({
+			mode: 'production',
+			module: {
+				rules: [
+					{
+						test: /\.(js)$/,
+						exclude: /(node_modules)/,
+						loader: 'babel-loader',
+						query: {
+							presets: ['@babel/env'],
+							plugins: ['babel-plugin-root-import']
+						}
+					}
+				]
+			}
+		})).on('error', function handleError() {
+			this.emit('end')
+		})
+		.pipe(rename('scripts.min.js'))
+		.pipe(dest('src/js'))
+		.pipe(browserSync.stream())
+}
+
+
 function styles() {
-	return src(paths.styles.src)
+	return src('src/scss/*.scss')
   .pipe(eval(preprocessor)())
   .pipe(gcmq())
   .pipe(csso())
@@ -81,7 +84,7 @@ function styles() {
 }
 
 function cssmin() {
-  return src(baseDir + '/css/main.css')
+  return src('src/css/main.css')
   .pipe(csso())
   .pipe(rename({suffix: '.min'}))
   .pipe(dest('src/css'))
@@ -90,6 +93,7 @@ function cssmin() {
 
 function startwatch() {
 	watch(baseDir  + '/**/' + preprocessor + '/**/*', series(styles, cssmin));
+  watch(['src/js/**/*.js', '!src/js/**/*.min.js'], scripts)
   watch(baseDir  + '/**/*.{' + fileswatch + '}').on('change', browserSync.reload);
 }
 
@@ -114,7 +118,7 @@ function clearDist() {
 function build(){
   return src(baseDir+'/css/*.css')
   .pipe(dest('dist/css')),
-  src(baseDir+'/js/*.js')
+  src(baseDir+'/js/scripts.js')
   .pipe(dest('dist/js')),
   src(baseDir+'/fonts/**/*')
   .pipe(dest('dist/fonts')),
@@ -130,7 +134,6 @@ exports.reactModules = reactModules;
 
 exports.scripts      = scripts;
 
-exports.build       = parallel(scripts, series(clearDist, parallel(build), reactModules));
+exports.build        = parallel(scripts, series(clearDist, parallel(build), reactModules, buildhtml));
 
 exports.default      = parallel(series(styles, cssmin), scripts, browsersync, startwatch);
-
