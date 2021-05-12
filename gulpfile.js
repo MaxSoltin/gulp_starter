@@ -40,12 +40,6 @@ function browsersync() {
 	})
 }
 
-async function buildhtml() {
-	let includes = new ssi('app/', 'dist/', '/**/*.html')
-	includes.compile()
-	del('dist/parts', { force: true })
-}
-
 function scripts() {
 	return src(['src/js/*.js', '!src/js/*.min.js'])
 		.pipe(webpack({
@@ -112,16 +106,26 @@ function reactModules() {
 }
 
 function clearDist() {
-  return del('dist');
+	return del('dist/**/*', { force: true })
 }
 
-function build(){
+async function buildhtml() {
+	let includes = new ssi('src/', 'dist/', '/**/*.html')
+	includes.compile()
+	del('dist/parts', { force: true })
+}
+
+function buildCopy(){
   return src(baseDir+'/css/*.css')
   .pipe(dest('dist/css')),
-  src(baseDir+'/js/scripts.js')
+  src(baseDir+'/js/scripts.min.js')
   .pipe(dest('dist/js')),
   src(baseDir+'/fonts/**/*')
   .pipe(dest('dist/fonts')),
+  src(baseDir+'/img/**/*')
+  .pipe(dest('dist/img')),
+  src(baseDir+'/images/**/*')
+  .pipe(dest('dist/images')),
   src(baseDir+'/*.html')
   .pipe(dest('dist'))
 }
@@ -134,6 +138,6 @@ exports.reactModules = reactModules;
 
 exports.scripts      = scripts;
 
-exports.build        = parallel(scripts, series(clearDist, parallel(build), reactModules, buildhtml));
+exports.build        = series(clearDist, scripts, buildCopy, reactModules, buildhtml);
 
 exports.default      = parallel(series(styles, cssmin), scripts, browsersync, startwatch);
