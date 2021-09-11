@@ -1,4 +1,4 @@
-let preprocessor = 'scss',
+let preprocessor = 'sass',
     fileswatch   = 'html,htm,txt,json,md,woff2',
     baseDir      = 'src',
     online       = true,
@@ -7,10 +7,10 @@ let preprocessor = 'scss',
 
 const { src, dest, parallel, series, watch } = require('gulp');
 
-const bssi         = require('browsersync-ssi')
-const ssi          = require('ssi')
+const bssi          = require('browsersync-ssi')
+const ssi           = require('ssi')
 
-const scss          = require('gulp-sass');
+const sass          = require('gulp-sass')(require('sass'));
 const gcmq          = require('gulp-group-css-media-queries');
 
 const csso          = require('gulp-csso');
@@ -18,7 +18,10 @@ const cssbeautify   = require('gulp-cssbeautify');
 
 const autoprefixer  = require('gulp-autoprefixer');
 const browserSync   = require('browser-sync').create();
-const webpack       = require('webpack-stream');
+
+const webpack       = require('webpack');
+const webpackStream = require('webpack-stream');
+const TerserPlugin  = require('terser-webpack-plugin');
 
 const concat        = require('gulp-concat');
 const uglify        = require('gulp-uglify-es').default;
@@ -40,7 +43,7 @@ function browsersync() {
 	})
 }
 
-function scripts() {
+/* function scripts() {
 	return src(['src/js/*.js', '!src/js/*.min.js'])
 		.pipe(webpack({
 			mode: 'production',
@@ -61,6 +64,46 @@ function scripts() {
 			this.emit('end')
 		})
 		.pipe(rename('scripts.min.js'))
+		.pipe(dest('src/js'))
+		.pipe(browserSync.stream())
+} */
+
+function scripts() {
+	return src(['src/js/*.js', '!src/js/*.min.js'])
+		.pipe(webpackStream({
+			mode: 'production',
+			performance: { hints: false },
+			plugins: [
+				new webpack.ProvidePlugin({ $: 'jquery', jQuery: 'jquery', 'window.jQuery': 'jquery' }), // jQuery (npm i jquery)
+			],
+			module: {
+				rules: [
+					{
+						test: /\.m?js$/,
+						exclude: /(node_modules)/,
+						use: {
+							loader: 'babel-loader',
+							options: {
+								presets: ['@babel/preset-env'],
+								plugins: ['babel-plugin-root-import']
+							}
+						}
+					}
+				]
+			},
+			optimization: {
+				minimize: true,
+				minimizer: [
+					new TerserPlugin({
+						terserOptions: { format: { comments: false } },
+						extractComments: false
+					})
+				]
+			},
+		}, webpack)).on('error', function handleError() {
+			this.emit('end')
+		})
+		.pipe(concat('scripts.min.js'))
 		.pipe(dest('src/js'))
 		.pipe(browserSync.stream())
 }
