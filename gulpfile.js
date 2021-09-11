@@ -1,4 +1,4 @@
-let preprocessor = 'sass',
+let preprocessor = 'scss',
     fileswatch   = 'html,htm,txt,json,md,woff2',
     baseDir      = 'src',
     online       = true,
@@ -10,7 +10,7 @@ const { src, dest, parallel, series, watch } = require('gulp');
 const bssi          = require('browsersync-ssi')
 const ssi           = require('ssi')
 
-const sass          = require('gulp-sass')(require('sass'));
+const scss          = require('gulp-sass')(require('sass'));
 const gcmq          = require('gulp-group-css-media-queries');
 
 const csso          = require('gulp-csso');
