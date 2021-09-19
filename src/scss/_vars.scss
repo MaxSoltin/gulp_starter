@@ -29,3 +29,12 @@ $breakpoint-md: 992px;
 $breakpoint-lg: 1200px;
 $breakpoint-xl: 1400px;
 $breakpoint-xxl: 1920px;
+
+$grid-breakpoints: (
+  xs: 0,
+  sm: $breakpoint-xs,
+  md: $breakpoint-sm,
+  lg: $breakpoint-md,
+  xl: $breakpoint-lg,
+  xxl: $breakpoint-xl
+);
