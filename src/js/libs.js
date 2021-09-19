@@ -1,3 +1,4 @@
+import $ from 'jquery'; window.jQuery = $; window.$ = $;
 require('~/src/libs/modernizr/modernizr.js');
 require('~/src/libs/lazysizes/lazysizes.js');
 
@@ -5,9 +6,3 @@ require('~/src/libs/lazysizes/lazysizes.js');
 
 //require('~/src/libs/maskedinput/jquery.maskedinput.min.js');
 //require('~/src/libs/fancybox/jquery.fancybox.js');
-
-$(function () {
-
-  
-
-});

@@ -1,8 +1,8 @@
-let preprocessor = 'scss',
+let preprocessor = 'sass',
     fileswatch   = 'html,htm,txt,json,md,woff2',
     baseDir      = 'src',
     online       = true,
-    open         = true
+    open         = false
 
 
 const { src, dest, parallel, series, watch } = require('gulp');
@@ -10,7 +10,7 @@ const { src, dest, parallel, series, watch } = require('gulp');
 const bssi          = require('browsersync-ssi')
 const ssi           = require('ssi')
 
-const scss          = require('gulp-sass')(require('sass'));
+const sass          = require('gulp-sass')(require('sass'));
 const gcmq          = require('gulp-group-css-media-queries');
 
 const csso          = require('gulp-csso');
@@ -43,33 +43,8 @@ function browsersync() {
 	})
 }
 
-/* function scripts() {
-	return src(['src/js/*.js', '!src/js/*.min.js'])
-		.pipe(webpack({
-			mode: 'production',
-			module: {
-				rules: [
-					{
-						test: /\.(js)$/,
-						exclude: /(node_modules)/,
-						loader: 'babel-loader',
-						query: {
-							presets: ['@babel/env'],
-							plugins: ['babel-plugin-root-import']
-						}
-					}
-				]
-			}
-		})).on('error', function handleError() {
-			this.emit('end')
-		})
-		.pipe(rename('scripts.min.js'))
-		.pipe(dest('src/js'))
-		.pipe(browserSync.stream())
-} */
-
 function scripts() {
-	return src(['src/js/*.js', '!src/js/*.min.js'])
+	return src(['src/js/*.js', '!src/js/*.min.js', '!src/js/modules/*.js'])
 		.pipe(webpackStream({
 			mode: 'production',
 			performance: { hints: false },
@@ -103,15 +78,14 @@ function scripts() {
 		}, webpack)).on('error', function handleError() {
 			this.emit('end')
 		})
-		.pipe(concat('scripts.min.js'))
+		.pipe(concat('libs.min.js'))
 		.pipe(dest('src/js'))
 		.pipe(browserSync.stream())
 }
 
-
 function styles() {
 	return src('src/scss/*.scss')
-  .pipe(eval(preprocessor)())
+  .pipe(sass().on('error', sass.logError))
   .pipe(gcmq())
   .pipe(csso())
   .pipe(cssbeautify())
@@ -129,7 +103,7 @@ function cssmin() {
 }
 
 function startwatch() {
-	watch(baseDir  + '/**/' + preprocessor + '/**/*', series(styles, cssmin));
+	watch(baseDir  + '/**/scss/**/*', series(styles, cssmin));
   watch(['src/js/**/*.js', '!src/js/**/*.min.js'], scripts)
   watch(baseDir  + '/**/*.{' + fileswatch + '}').on('change', browserSync.reload);
 }
@@ -139,7 +113,7 @@ function reactModules() {
   .pipe(rename(function (path) {
     path.basename = path.basename.replace(/\_/g, '');
   }))
-  .pipe(eval(preprocessor)())
+  .pipe(sass().on('error', sass.logError))
   .pipe(gcmq())
   .pipe(csso())
   .pipe(cssbeautify())
@@ -161,7 +135,7 @@ async function buildhtml() {
 function buildCopy(){
   return src(baseDir+'/css/*.css')
   .pipe(dest('dist/css')),
-  src(baseDir+'/js/scripts.min.js')
+  src(baseDir+'/js/libs.min.js')
   .pipe(dest('dist/js')),
   src(baseDir+'/fonts/**/*')
   .pipe(dest('dist/fonts')),
@@ -170,7 +144,10 @@ function buildCopy(){
   src(baseDir+'/images/**/*')
   .pipe(dest('dist/images')),
   src(baseDir+'/*.html')
-  .pipe(dest('dist'))
+  .pipe(dest('dist')),
+  src(baseDir+'/js/modules/*.js')
+  .pipe(uglify({ output: { comments: false } }))
+  .pipe(dest('dist/js/modules/'))
 }
 
 exports.browsersync  = browsersync;
