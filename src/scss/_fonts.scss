@@ -1,4 +1,4 @@
-@import "vars";
+@import 'vars';
 
 @mixin font($fname, $fmark, $fweight, $fstyle) {
 	@font-face {
@@ -6,8 +6,8 @@
 		font-style: $fstyle;
 		font-weight: $fweight;
 		font-display: swap;
-		src: url('../fonts/'+$fname+'/'+$fname+'-'+$fmark+'/'+$fname+'-'+$fmark+'.woff2') format('woff2'),
-		     url('../fonts/'+$fname+'/'+$fname+'-'+$fmark+'/'+$fname+'-'+$fmark+'.woff') format('woff')
+		src: url('../fonts/' + $fname + '/' + $fname + '-' + $fmark + '/' + $fname + '-' + $fmark + '.woff2') format('woff2'),
+				 url('../fonts/' + $fname + '/' + $fname + '-' + $fmark + '/' + $fname + '-' + $fmark + '.woff') format('woff');
 	}
 }
 

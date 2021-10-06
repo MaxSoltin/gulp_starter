@@ -14,7 +14,7 @@ $secondFont: 'Montserrat';
 $fontsize: 16px; // Body Font Size
 $bodybackground: #eee;
 $textcolor: #333; // Text Color
-$accent: #008AFF; // Accent Color
+$accent: #008aff; // Accent Color
 
 $bradius: 0;
 
@@ -31,10 +31,10 @@ $breakpoint-xl: 1400px;
 $breakpoint-xxl: 1920px;
 
 $grid-breakpoints: (
-  xs: 0,
-  sm: $breakpoint-xs,
-  md: $breakpoint-sm,
-  lg: $breakpoint-md,
-  xl: $breakpoint-lg,
-  xxl: $breakpoint-xl
+	xs: 0,
+	sm: $breakpoint-xs,
+	md: $breakpoint-sm,
+	lg: $breakpoint-md,
+	xl: $breakpoint-lg,
+	xxl: $breakpoint-xl,
 );
