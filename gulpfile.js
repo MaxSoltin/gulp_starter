@@ -2,7 +2,7 @@ let preprocessor = 'sass',
 	fileswatch = 'html,htm,txt,json,md,woff2',
 	baseDir = 'src',
 	online = true,
-	open = false
+	open = true
 
 const { src, dest, parallel, series, watch } = require('gulp')
 
