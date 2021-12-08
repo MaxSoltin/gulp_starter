@@ -2,7 +2,7 @@ let preprocessor = 'sass',
 	fileswatch = 'html,htm,txt,json,md,woff2',
 	baseDir = 'src',
 	online = true,
-	open = true
+	open = false
 
 const { src, dest, parallel, series, watch } = require('gulp')
 
@@ -43,15 +43,11 @@ function browsersync() {
 }
 
 function scripts() {
-	return src(['src/js/*.js', '!src/js/*.min.js', '!src/js/modules/*.js'])
+	return src(['src/js/modules/libs.js', 'src/js/modules/**.js', 'src/js/modules/common.js'])
 		.pipe(
-			webpackStream(
-				{
+			webpackStream({
 					mode: 'production',
 					performance: { hints: false },
-					plugins: [
-						new webpack.ProvidePlugin({ $: 'jquery', jQuery: 'jquery', 'window.jQuery': 'jquery' }), // jQuery (npm i jquery)
-					],
 					module: {
 						rules: [
 							{
@@ -83,7 +79,7 @@ function scripts() {
 		.on('error', function handleError() {
 			this.emit('end')
 		})
-		.pipe(concat('libs.min.js'))
+		.pipe(concat('scripts.min.js'))
 		.pipe(dest('src/js'))
 		.pipe(browserSync.stream())
 }
@@ -142,14 +138,17 @@ async function buildhtml() {
 function buildCopy() {
 	return (
 		src(baseDir + '/css/*.css').pipe(dest('dist/css')),
-		src(baseDir + '/js/libs.min.js').pipe(dest('dist/js')),
 		src(baseDir + '/fonts/**/*').pipe(dest('dist/fonts')),
 		src(baseDir + '/img/**/*').pipe(dest('dist/img')),
 		src(baseDir + '/images/**/*').pipe(dest('dist/images')),
 		src(baseDir + '/*.html').pipe(dest('dist')),
 		src(baseDir + '/js/modules/*.js')
+			.pipe(dest('dist/js/modules/')),
+		src(baseDir + '/js/modules/libs.js')
 			.pipe(uglify({ output: { comments: false } }))
-			.pipe(dest('dist/js/modules/'))
+			.pipe(rename({ suffix: '.min' }))
+			.pipe(dest('dist/js')),
+		src(baseDir + '/js/scripts.min.js').pipe(dest('dist/js'))
 	)
 }
 
