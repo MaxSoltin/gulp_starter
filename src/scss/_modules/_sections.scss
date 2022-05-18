@@ -1,0 +1,8 @@
+@import '../vars';
+@import '../_mixins/mixins';
+@import '../extensions';
+
+.mainContent {
+	padding: $gutter 0;
+	flex: 1 1 auto;
+}
