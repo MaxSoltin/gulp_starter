@@ -1,7 +1,7 @@
 let preprocessor = 'sass',
 	fileswatch = 'html,htm,txt,json,md,woff2',
 	baseDir = 'src',
-	online = true,
+	online = false,
 	open = true
 
 const { src, dest, parallel, series, watch } = require('gulp')
@@ -35,6 +35,10 @@ function browsersync() {
 		server: {
 			baseDir: baseDir + '/',
 			middleware: bssi({ baseDir: 'src/', ext: '.html' }),
+		},
+		port: 4001,
+		ui: {
+			port: 4002
 		},
 		notify: false,
 		open: open,
