@@ -6,6 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 $(function () {
 
-  //Custom JQ
+	
 
 });
