@@ -1,7 +1,7 @@
 let preprocessor = 'sass',
 	fileswatch = 'html,htm,txt,json,md,woff2',
 	baseDir = 'src',
-	online = false,
+	online = true,
 	open = true
 
 const { src, dest, parallel, series, watch } = require('gulp')
@@ -36,18 +36,15 @@ function browsersync() {
 			baseDir: baseDir + '/',
 			middleware: bssi({ baseDir: 'src/', ext: '.html' }),
 		},
-		port: 4001,
-		ui: {
-			port: 4002
-		},
 		notify: false,
 		open: open,
 		online: online,
 	})
 }
 
+
 function scripts() {
-	return src(['src/js/modules/libs.js', 'src/js/modules/**.js', 'src/js/modules/common.js'])
+	return src(['src/js/modules/libs.js', 'src/js/modules/**.js', 'src/js/modules/common.js', '!src/js/jquery.js'])
 		.pipe(
 			webpackStream({
 					mode: 'production',
@@ -114,7 +111,7 @@ function startwatch() {
 }
 
 function reactModules() {
-	return src('src/scss/_modules/*.scss')
+	return src('src/scss/modules/*.scss')
 		.pipe(
 			rename(function (path) {
 				path.basename = path.basename.replace(/\_/g, '')
@@ -148,10 +145,7 @@ function buildCopy() {
 		src(baseDir + '/*.html').pipe(dest('dist')),
 		src(baseDir + '/js/modules/*.js')
 			.pipe(dest('dist/js/modules/')),
-		src(baseDir + '/js/modules/libs.js')
-			.pipe(uglify({ output: { comments: false } }))
-			.pipe(rename({ suffix: '.min' }))
-			.pipe(dest('dist/js')),
+		src(baseDir + '/js/jquery.js').pipe(dest('dist/js')),
 		src(baseDir + '/js/scripts.min.js').pipe(dest('dist/js'))
 	)
 }

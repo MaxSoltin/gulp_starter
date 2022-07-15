@@ -1556,6 +1556,16 @@ fieldset {
     pointer-events: none
 }
 
+.swiper-button-next.swiper-button-hidden,.swiper-button-prev.swiper-button-hidden {
+    opacity: 0;
+    cursor: auto;
+    pointer-events: none
+}
+
+.swiper-navigation-disabled .swiper-button-next,.swiper-navigation-disabled .swiper-button-prev {
+    display: none!important
+}
+
 .swiper-button-next:after,.swiper-button-prev:after {
     font-family: swiper-icons;
     font-size: var(--swiper-navigation-size);
@@ -1600,6 +1610,10 @@ fieldset {
 
 .swiper-pagination.swiper-pagination-hidden {
     opacity: 0
+}
+
+.swiper-pagination-disabled>.swiper-pagination,.swiper-pagination.swiper-pagination-disabled {
+    display: none!important
 }
 
 .swiper-horizontal>.swiper-pagination-bullets,.swiper-pagination-bullets.swiper-pagination-horizontal,.swiper-pagination-custom,.swiper-pagination-fraction {
@@ -1791,7 +1805,11 @@ button.swiper-pagination-bullet {
     background: rgba(0,0,0,.1)
 }
 
-.swiper-horizontal>.swiper-scrollbar {
+.swiper-scrollbar-disabled>.swiper-scrollbar,.swiper-scrollbar.swiper-scrollbar-disabled {
+    display: none!important
+}
+
+.swiper-horizontal>.swiper-scrollbar,.swiper-scrollbar.swiper-scrollbar-horizontal {
     position: absolute;
     left: 1%;
     bottom: 3px;
@@ -1800,7 +1818,7 @@ button.swiper-pagination-bullet {
     width: 98%
 }
 
-.swiper-vertical>.swiper-scrollbar {
+.swiper-scrollbar.swiper-scrollbar-vertical,.swiper-vertical>.swiper-scrollbar {
     position: absolute;
     right: 3px;
     top: 1%;
