@@ -131,9 +131,9 @@ function clearDist() {
 }
 
 async function buildhtml() {
-	let includes = new ssi('src/', 'dist/', '/**/*.html')
-	includes.compile()
-	del('dist/includes', { force: true })
+	let partials = new ssi('src/', 'dist/', '/**/*.html')
+	partials.compile()
+	del('dist/partials', { force: true })
 }
 
 function buildCopy() {
