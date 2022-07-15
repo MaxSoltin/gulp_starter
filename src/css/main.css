@@ -1212,7 +1212,7 @@ body {
     font-family: "Roboto";
     font-size: 16px;
     min-width: 320px;
-    line-height: 1.2;
+    line-height: 1;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     color: #333;
@@ -2070,10 +2070,14 @@ button.swiper-pagination-bullet {
 }
 
 .mainContent {
-    padding: 30px 0;
     -webkit-box-flex: 1;
         -ms-flex: 1 1 auto;
             flex: 1 1 auto
+}
+
+.mainContent,.section {
+    padding: 0;
+    margin: 0
 }
 
 .h1 {
