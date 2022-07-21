@@ -28,7 +28,6 @@ const uglify = require('gulp-uglify-es').default
 //const exec          = require('gulp-exec');
 
 const rename = require('gulp-rename')
-//const del = require('del')
 const clean = require('gulp-clean')
 
 
