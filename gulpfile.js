@@ -28,7 +28,9 @@ const uglify = require('gulp-uglify-es').default
 //const exec          = require('gulp-exec');
 
 const rename = require('gulp-rename')
-const del = require('del')
+//const del = require('del')
+const clean = require('gulp-clean')
+
 
 function browsersync() {
 	browserSync.init({
@@ -110,8 +112,8 @@ function startwatch() {
 	watch(baseDir + '/**/*.{' + fileswatch + '}').on('change', browserSync.reload)
 }
 
-function reactModules() {
-	return src('src/scss/modules/*.scss')
+function cssModules() {
+	return src('src/scss/_modules/*.scss')
 		.pipe(
 			rename(function (path) {
 				path.basename = path.basename.replace(/\_/g, '')
@@ -127,13 +129,19 @@ function reactModules() {
 }
 
 function clearDist() {
-	return del('dist/**/*', { force: true })
+	return src('dist', {read: false})
+		.pipe(clean())
+}
+
+function clearPartials() {
+	return src('dist/partials', {read: false})
+		.pipe(clean())
 }
 
 async function buildhtml() {
 	let partials = new ssi('src/', 'dist/', '/**/*.html')
 	partials.compile()
-	del('dist/partials', { force: true })
+	//clean('dist/partials', {read: false})
 }
 
 function buildCopy() {
@@ -145,7 +153,7 @@ function buildCopy() {
 		src(baseDir + '/*.html').pipe(dest('dist')),
 		src(baseDir + '/js/modules/*.js')
 			.pipe(dest('dist/js/modules/')),
-		src(baseDir + '/js/jquery.js').pipe(dest('dist/js')),
+		//src(baseDir + '/js/jquery.js').pipe(dest('dist/js')),
 		src(baseDir + '/js/scripts.min.js').pipe(dest('dist/js'))
 	)
 }
@@ -154,10 +162,10 @@ exports.browsersync = browsersync
 exports.styles = styles
 
 exports.cssmin = cssmin
-exports.reactModules = reactModules
+exports.cssModules = cssModules
 
 exports.scripts = scripts
 
-exports.build = series(clearDist, scripts, buildCopy, reactModules, buildhtml)
+exports.build = series(clearDist, scripts, buildCopy, cssModules, buildhtml, clearPartials)
 
 exports.default = parallel(series(styles, cssmin), scripts, browsersync, startwatch)
