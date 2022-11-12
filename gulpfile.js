@@ -45,7 +45,7 @@ function browsersync() {
 
 
 function scripts() {
-	return src(['src/js/modules/libs.js', 'src/js/modules/**.js', 'src/js/modules/common.js', '!src/js/jquery.js'])
+	return src(['src/js/libs/**.js'])
 		.pipe(
 			webpackStream({
 					mode: 'production',
@@ -81,7 +81,7 @@ function scripts() {
 		.on('error', function handleError() {
 			this.emit('end')
 		})
-		.pipe(concat('scripts.min.js'))
+		.pipe(concat('libs.min.js'))
 		.pipe(dest('src/js'))
 		.pipe(browserSync.stream())
 }
@@ -150,10 +150,8 @@ function buildCopy() {
 		src(baseDir + '/img/**/*').pipe(dest('dist/img')),
 		src(baseDir + '/images/**/*').pipe(dest('dist/images')),
 		src(baseDir + '/*.html').pipe(dest('dist')),
-		src(baseDir + '/js/modules/*.js')
-			.pipe(dest('dist/js/modules/')),
-		//src(baseDir + '/js/jquery.js').pipe(dest('dist/js')),
-		src(baseDir + '/js/scripts.min.js').pipe(dest('dist/js'))
+		src(baseDir + '/js/libs.min.js').pipe(dest('dist/js')),
+		src(baseDir + '/js/common.js').pipe(dest('dist/js'))
 	)
 }
 
